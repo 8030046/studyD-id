@@ -1,4 +1,5 @@
 'use strict';
+let oss_url
 import DID_API from './api.json' assert { type: 'json' };
 
 if (DID_API.key == '🤫') alert('Please put your api key inside ./api.json and restart..');
@@ -127,6 +128,31 @@ destroyButton.onclick = async () => {
 
   stopAllStreams();
   closePC();
+};
+
+// 发送文字
+const sendButton = document.getElementById('connect-send');
+sendButton.onclick = async () => {
+
+const userInput1 = document.getElementById('user-input-field').value;
+console.log("🚀 ~ userInput1:", userInput1)
+
+  const response =  await fetch(`https://v3pcapi.buudoo.com/pcadmin/ai/text2speech/inference`, {
+    method: 'post',
+    headers: {
+      Authorization: `Basic ${DID_API.key}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ audio_speed: '1',audio_type:'TencentSpeech_101004',audio_volume:5,text:userInput1,url:true }),
+  });
+  const data = await response.json();
+  console.log("🚀 ~ sendButton.onclick= ~ response:", data)
+              oss_url=data.oss_url
+const audio_div = document.getElementById('audio_div');
+audio_div.src  = data.oss_url
+audio_div.play()
+console.log("🚀 ~ sendButton.onclick= ~ audio_div:", )
+
 };
 
 // 生成图片动作
