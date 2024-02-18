@@ -30,9 +30,8 @@ const streamingStatusLabel = document.getElementById('streaming-status-label');
 const presenterInputByService = {
   talks: {
     // source_url: "https://buudoo-img-test.oss-cn-beijing.aliyuncs.com/meta/image/202401/31/3aad4138a7cf4d31925e5b0688358573.png"
-    source_url: "https://d-id-public-bucket.s3.amazonaws.com/or-roman.jpg"
-    // https://d-id-public-bucket.s3.amazonaws.com/or-roman.jpg'
-    ,
+    // source_url: "https://clips-presenters.d-id.com/rian/lZC6MmWfC1/mXra4jY38i/image.png"
+    source_url:"https://d-id-public-bucket.s3.amazonaws.com/or-roman.jpg"
   },
   clips: {
     presenter_id: 'qE4P1OFtWM',
@@ -150,7 +149,29 @@ console.log("🚀 ~ userInput1:", userInput1)
               oss_url=data.oss_url
 const audio_div = document.getElementById('audio_div');
 audio_div.src  = data.oss_url
-audio_div.play()
+// audio_div.play()
+ await fetchWithRetries(`${DID_API.url}/${DID_API.service}/streams/${streamId}`, {
+  method: 'POST',
+  headers: {
+    Authorization: `Basic ${DID_API.key}`,
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    script: {
+      type: 'audio',
+      audio_url: data.oss_url,
+    },
+    ...(DID_API.service === 'clips' && {
+      background: {
+        color: '#FFFFFF'
+      }
+    }),
+    config: {
+      stitch: true,
+    },
+    session_id: sessionId,
+  }),
+});
 console.log("🚀 ~ sendButton.onclick= ~ audio_div:", )
 
 };
@@ -306,6 +327,7 @@ function setVideoElement(stream) {
 function playIdleVideo() {
   videoElement.srcObject = undefined;
   // videoElement.src = DID_API.service == 'clips' ? 'rian_idle.mp4' : 'or_idle.mp4';
+  // videoElement.src = 'or_idle.mp4';
   videoElement.src = 'or_idle.mp4';
   videoElement.loop = true;
 }
