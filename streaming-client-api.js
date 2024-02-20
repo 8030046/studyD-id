@@ -311,6 +311,7 @@ async function createPeerConnection(offer, iceServers) {
 }
 
 function setVideoElement(stream) {
+  console.log("🚀 ~ setVideoElement ~ stream:", stream)
   if (!stream) return;
   videoElement.srcObject = stream;
   videoElement.loop = false;
